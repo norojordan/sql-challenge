@@ -80,9 +80,10 @@ SELECT employees.emp_no, employees.last_name, employees.first_name, employees.se
 FROM employees
 INNER JOIN salaries Using(emp_no);
 
-select e.emp_no, e.last_name, e.first_name, e.sex, s.salary
-from employees e, salaries s
-where e.emp_no = s.emp_no;
+-- Other method - without JOIN
+--select e.emp_no, e.last_name, e.first_name, e.sex, s.salary
+--from employees e, salaries s
+--where e.emp_no = s.emp_no;
 
 
 --2. List the first name, last name and hire date for employees who were hired in 1986
@@ -90,15 +91,9 @@ SELECT first_name, last_name, hire_date
 FROM employees
 WHERE hire_date LIKE '%1986';
 
---where hire_date between '1/1/1986' and '12/31/1986' didn't work
 
 --3. List the manager of each department with department number, department name, manager's employee's number
 -- last name and first name.
-select dm.dept_no, d.dept_name, dm.emp_no, e.last_name, e.first_name
-from dept_manager dm, departments d, employees e
-where dm.dept_no = d.dept_no
-and dm.emp_no = e.emp_no;
-
 
 SELECT dept_manager.dept_no, departments.dept_name, dept_manager.emp_no, employees.last_name, employees.first_name
 FROM dept_manager
@@ -106,10 +101,10 @@ INNER JOIN employees USING(emp_no)
 INNER Join departments USING(dept_no);
 
 --4. List the department of each employee with employee number, last name, first name and department name.
-Select employees.emp_no, employees.last_name, employees.first_name, Departments.dept_name
+Select employees.emp_no, employees.last_name, employees.first_name, departments.dept_name
 From employees
 INNER JOIN dept_emp USING(emp_no)
-INNER JOIN Departments USING(dept_no);
+INNER JOIN departments USING(dept_no);
 
 
 --5. List first name, last name and sex for employees whose first name is "Hercules" and last name begins with "B".
@@ -119,28 +114,29 @@ WHERE first_name = 'Hercules' and last_name like 'B%';
 
 
 --6. List all employees in the Sales department, including their employee number, last name, first name and department name.
-Select employees.emp_no, employees.last_name, employees.first_name, Departments.dept_name
+Select employees.emp_no, employees.last_name, employees.first_name, departments.dept_name
 From employees
 INNER JOIN dept_emp USING(emp_no)
 INNER JOIN departments USING(dept_no)
 where dept_name = 'Sales';
 
-select de.emp_no, e.last_name, e.first_name, d.dept_name
-from dept_emp de, departments d, employees e
-where de.emp_no = e.emp_no
-and de.dept_no = d.dept_no
-and d.dept_name = 'Sales';
+--select de.emp_no, e.last_name, e.first_name, d.dept_name
+--from dept_emp de, departments d, employees e
+--where de.emp_no = e.emp_no
+--and de.dept_no = d.dept_no
+--and d.dept_name = 'Sales';
 
 --7. List all employees in the Sales and Development departments including their employee number, last name, first name and deparment name.
-select de.emp_no, e.last_name, e.first_name, d.dept_name
-from dept_emp de, departments d, employees e
-where de.emp_no = e.emp_no
-and de.dept_no = d.dept_no
-and (d.dept_name = 'Sales' or d.dept_name = 'Development');
+
+Select employees.emp_no, employees.last_name, employees.first_name, departments.dept_name
+From employees
+INNER JOIN dept_emp USING(emp_no)
+INNER JOIN departments USING(dept_no)
+where (dept_name = 'Sales' or dept_name = 'Development');
 
 
 --8. In descending order, list the frequency count of employee last names and how many employees share each last name. 
-select last_name, count(emp_no) as fcount
+select last_name, count(last_name) as fcount
 from employees 
 group by last_name
 order by fcount desc;
